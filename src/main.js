@@ -96,54 +96,40 @@ else {
 
 function productTemplate(_product) {
   let base =  `
- <div class="card mb-4">
+ <div class="card mb-4 shadow">
       <img class="card-img-top" src="${_product.eventCard}" alt="...">
       <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded">
       <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${_product.index}"></i>
       </div> 
-  <div class="card-body text-left p-4 position-relative">
+  <div class="card-body text-left p-3 position-relative"
+   style="background-color : rgb(255,218,185)">
         <div class="translate-middle-y position-absolute top-0"  id="${_product.index}">
         ${identiconTemplate(_product.owner)}
         </div>
-        <h4 class="card-title fs-4 fw-bold mt-2">${_product.eventName}</h4>
-        <p class="card-text mb-1" style="min-height: 82px;
+        <h5 class="card-title  fw-bold mt-2">${_product.eventName}</h5>
+        <p class="card-text mb-2" style="
   width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis">
           ${_product.eventDetails}             
         </p>
-
-
-        <p class="card-text mt-1">
-          <i class="bi bi-calendar-event-fill"></i>
-           <span>${_product.eventDetails}</span>
-        </p>
-
-        <p class="card-text mt-4">
-          <i class="bi bi-geo-alt-fill"></i>
-          <span>${_product.location}</span>
-        </p>
-        
-      </div>
-    </div>
-    `
-
-     base += `
-     <div class="mt-2 mx-2" style="display: flex;
+<div style="display: flex;
   justify-content: space-between;">
-     <div> <a class="btn btn-sm btn-dark Reviews" 
-     id="${_product.index}">Reviews</a></div>
-
-          <div> <a class="btn btn-sm btn-dark views"
-           id="${_product.index}">View</a></div>
-           </div>
+      
 
            <div> <a class="btn btn-sm btn-dark attendee"
            id="${_product.index}">Attend</a></div>
-           </div>
-           `;
+           
 
+           <div> <a class="btn btn-sm btn-dark views"
+           id="${_product.index}">View</a></div>
+          </div>
+
+    
+      </div>
+    </div>
+    `
     // Reviews section
     base += `
     <div id="comment-review${_product.index}" style="display: none;">
@@ -176,7 +162,7 @@ function productTemplate1(_product) {
         <div class="translate-middle-y position-absolute top-0">
         ${identiconTemplate(_product.owner)}
         </div>
-        <h4 class="card-title fs-4 fw-bold mt-2">${_product.eventName}</h4>
+        <h5 class="card-title fs-4 fw-bold mt-2">${_product.eventName}</h5>
         <p class="card-text mb-1" style="min-height: 82px">
           ${_product.eventDetails}             
         </p>
@@ -400,3 +386,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
 
 })  
 
+
+
+// <div> <a class="btn btn-sm btn-dark Reviews" 
+//      id="${_product.index}">Reviews</a></div>
