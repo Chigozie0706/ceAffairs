@@ -1,89 +1,148 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.3;
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-pragma solidity >=0.7.0 <0.9.0;
+contract DecFriendz{
 
-interface IERC20Token {
-  function transfer(address, uint256) external returns (bool);
-  function approve(address, uint256) external returns (bool);
-  function transferFrom(address, address, uint256) external returns (bool);
-  function totalSupply() external view returns (uint256);
-  function balanceOf(address) external view returns (uint256);
-  function allowance(address, address) external view returns (uint256);
+    uint internal eventLength = 0;
+    uint internal eventCommentsLength = 0; 
 
-  event Transfer(address indexed from, address indexed to, uint256 value);
-  event Approval(address indexed owner, address indexed spender, uint256 value);
+    // Ceating a struct to store voucher details.
+    struct Event {
+        address  owner;
+        string eventName;
+        string eventDetails;
+        uint datePosted;
+        string eventCard;
+    }
+
+
+    struct EventComment {
+        uint eventId;
+        string comment;
+        address owner;
+    }
+
+    struct EventComment1 {
+        uint eventId;
+        string comment;
+        address owner;
+    }
+
+    
+
+
+   
+    
+    mapping (uint => Event) internal events;
+    mapping (uint => EventComment) internal eventComments;
+    mapping (uint => EventComment1[]) internal eventComments1;
+    mapping(uint256 => string[]) internal reviews;
+    mapping(uint256 => address[]) internal eventAttendees;
+
+
+    function addEventComment(uint256 _index, string memory _comment) public
+    {
+        eventComments1[_index].push(EventComment1({owner : msg.sender, comment: _comment,   eventId : _index}));
+    }
+
+    function getEventComment(uint256 _index)
+        public
+        view
+        returns (EventComment1[] memory)
+    {
+        return eventComments1[_index];
+    }
+    
+    
+    
+    // Function to create  a voucher.
+    function createEvent(string memory _eventName, string memory _eventDetails, string 
+    memory _eventCard) public {
+        events[eventLength] = Event({owner : msg.sender, eventName: _eventName, 
+     eventDetails: _eventDetails, datePosted: block.timestamp, eventCard : _eventCard});
+     eventLength++;
 }
 
-contract Marketplace {
 
-    uint internal productsLength = 0;
-    address internal cUsdTokenAddress = 0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1;
+  function commentOnEvent (string memory _comment,  uint _eventId) public {
+   eventComments[eventCommentsLength] =  EventComment({eventId : _eventId, 
+    comment: _comment, owner : msg.sender});
+    eventCommentsLength++;
+}
 
-    struct Product {
-        address payable owner;
-        string name;
-        string image;
-        string description;
-        string location;
-        uint price;
-        uint sold;
+
+function deleteEventById(uint _index) public {
+        require(msg.sender == events[_index].owner, "you are not the owner");
+        delete events[_index];
     }
 
-    mapping (uint => Product) internal products;
 
-    function writeProduct(
-        string memory _name,
-        string memory _image,
-        string memory _description, 
-        string memory _location, 
-        uint _price
-    ) public {
-        uint _sold = 0;
-        products[productsLength] = Product(
-            payable(msg.sender),
-            _name,
-            _image,
-            _description,
-            _location,
-            _price,
-            _sold
-        );
-        productsLength++;
-    }
-
-    function readProduct(uint _index) public view returns (
-        address payable,
+    // Function to get the records of all vouchers created.
+    function getEventById(uint _index) public view returns (
+        address,
         string memory, 
         string memory, 
-        string memory, 
-        string memory, 
-        uint, 
-        uint
+        uint,
+        string memory
     ) {
+    
         return (
-            products[_index].owner,
-            products[_index].name, 
-            products[_index].image, 
-            products[_index].description, 
-            products[_index].location, 
-            products[_index].price,
-            products[_index].sold
+            events[_index].owner,
+            events[_index].eventName, 
+            events[_index].eventDetails,
+            events[_index].datePosted,
+            events[_index].eventCard
         );
     }
+
+
+    function addReview(uint256 _index, string memory _review) public
+    {
+        reviews[_index].push(_review);
+    }
+
+    function addEventAttendees(uint256 _index) public
+    {
+        eventAttendees[_index].push(msg.sender);
     
-    function buyProduct(uint _index) public payable  {
-        require(
-          IERC20Token(cUsdTokenAddress).transferFrom(
-            msg.sender,
-            products[_index].owner,
-            products[_index].price
-          ),
-          "Transfer failed."
-        );
-        products[_index].sold++;
+    }
+
+    function getAttendees(uint256 _index)
+        public
+        view
+        returns (address[] memory)
+    {
+        return eventAttendees[_index];
+    }
+
+    function getReview(uint256 _index)
+        public
+        view
+        returns (string[] memory)
+    {
+        return reviews[_index];
     }
     
-    function getProductsLength() public view returns (uint) {
-        return (productsLength);
+    
+    // Function to get current TimeStamp.
+    function getCurrentTimeStamp () private view returns(uint) {
+        return block.timestamp;
     }
+
+
+//     function deleteEventById (uint _index) public {
+//         require(msg.sender == events[_index].owner, "Invalid owner");
+//         delete events[_index];
+// }
+
+// function deleteEventById(uint256 _index) public {
+//         require(msg.sender == events[_index].owner, "Invalid owner");
+//         events[_index].isDeleted = "true";
+//     }    
+
+function getEventLength() public view returns (uint) {
+        return (eventLength);
+    }    
+
 }
