@@ -15,62 +15,13 @@
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_comment",
-				"type": "string"
-			}
-		],
-		"name": "addEventComment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_review",
-				"type": "string"
-			}
-		],
-		"name": "addReview",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_comment",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_eventId",
-				"type": "uint256"
-			}
-		],
-		"name": "commentOnEvent",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "string",
 				"name": "_eventName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_eventCardImgUrl",
 				"type": "string"
 			},
 			{
@@ -80,7 +31,17 @@
 			},
 			{
 				"internalType": "string",
-				"name": "_eventCard",
+				"name": "_eventDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_eventTime",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_eventLocation",
 				"type": "string"
 			}
 		],
@@ -147,50 +108,24 @@
 				"type": "string"
 			},
 			{
-				"internalType": "uint256",
+				"internalType": "string",
 				"name": "",
-				"type": "uint256"
+				"type": "string"
 			},
 			{
 				"internalType": "string",
 				"name": "",
 				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
+			},
 			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			}
-		],
-		"name": "getEventComment",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "eventId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "comment",
-						"type": "string"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					}
-				],
-				"internalType": "struct DecFriendz.EventComment1[]",
+				"internalType": "string",
 				"name": "",
-				"type": "tuple[]"
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -204,25 +139,6 @@
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			}
-		],
-		"name": "getReview",
-		"outputs": [
-			{
-				"internalType": "string[]",
-				"name": "",
-				"type": "string[]"
 			}
 		],
 		"stateMutability": "view",

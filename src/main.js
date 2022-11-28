@@ -5,8 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-//const MPContractAddress = "0x178134c92EC973F34dD0dd762284b852B211CFC8"
-const MPContractAddress = "0xEE61Db75B18A5D84119E7cE9840bc2BFbD8F1dc7"
+const MPContractAddress = "0x586eDe6C40207b42c99e79ECdDdd7b1ac6308891"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
@@ -60,9 +59,11 @@ const getProducts = async function() {
         index: i,
         owner: p[0],
         eventName: p[1],
-        eventDetails: p[2],
-        datePosted: p[3],
-        eventCard: p[4]
+        eventCardImgUrl: p[2],
+        eventDetails: p[3],
+        eventDate: p[4],
+        eventTime: p[5],
+        eventLocation : p[6]
       })
 
       console.log(p)
@@ -82,7 +83,7 @@ function renderProducts() {
   products.forEach((_product) => {
     if (_product.owner != "0x0000000000000000000000000000000000000000") {
     const newDiv = document.createElement("div")
-    newDiv.className = "col-md-4"
+    newDiv.className = "col-md-3"
     newDiv.innerHTML = productTemplate(_product)
     document.getElementById("marketplace").appendChild(newDiv)
   }
@@ -97,7 +98,7 @@ else {
 function productTemplate(_product) {
   let base =  `
  <div class="card mb-4 shadow">
-      <img class="card-img-top" src="${_product.eventCard}" alt="...">
+      <img class="card-img-top" src="${_product.eventCardImgUrl}" alt="...">
       <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded">
       <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${_product.index}"></i>
       </div> 
@@ -130,61 +131,10 @@ function productTemplate(_product) {
       </div>
     </div>
     `
-    // Reviews section
-    base += `
-    <div id="comment-review${_product.index}" style="display: none;">
-    <ul class="d-grid gap dibba mt-3 pt-2 pr-2 pl-2" id="review${_product.index}">
-    </ul> 
-    
-    <div class="card-footer py-3 border-0 mt-3" style="background-color: #f8f9fa;">
-            <div class="d-flex flex-start w-100">
-              <div class="form-outline w-100">
-                <textarea class="form-control" id="textAreaExample${_product.index}" rows="4"
-                  style="background: #fff;"></textarea>
-                <label class="form-label" for="textAreaExample">Comments</label>
-              </div>
-            </div>
-            <div class="float-end mt-2 pt-1">
-              <button type="button" class="btn btn-success Postcomment" id="${_product.index}">Post comment</button>
-            </div>
-      </div>`
   return base
 }
 
-//view id event
-function productTemplate1(_product) {
-  let base =  `
- <div class="card mb-4">
-      <img class="card-img-top" src="${_product.eventCard}" alt="...">
-      <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
-      </div> 
-  <div class="card-body text-left p-4 position-relative">
-        <div class="translate-middle-y position-absolute top-0">
-        ${identiconTemplate(_product.owner)}
-        </div>
-        <h5 class="card-title fs-4 fw-bold mt-2">${_product.eventName}</h5>
-        <p class=" mb-1 " style="min-height: 82px" >
-          ${_product.eventDetails}             
-        </p>
-        <p class="card-text mt-1">
-          <i class="bi bi-calendar-event-fill"></i>
-           <span>${_product.eventDetails}</span>
-        </p>
 
-        <p class="card-text mt-4">
-          <i class="bi bi-geo-alt-fill"></i>
-          <span>${_product.location}</span>
-        </p>
-              </div>
-    </div>
-    `
-     base += `<div class="d-grid gap mt-2"> <a class="btn btn-lg btn-dark Reviews" id="${_product.index}">Reviews</a></div>
-          <div class="d-grid gap mt-2"> <a class="btn btn-lg btn-dark Reviews" id="${_product.index}">View</a></div>
-     `; 
-  return base
-}
-
-//--iconakak nk k
 
 function identiconTemplate(_address) {
   const icon = blockies
@@ -228,8 +178,11 @@ document
   .addEventListener("click", async (e) => {
     const params = [
       document.getElementById("eventName").value,
+      document.getElementById("eventCardImgUrl").value,
       document.getElementById("eventDetails").value,
-      document.getElementById("eventCardImg").value,
+      document.getElementById("eventDate").value,
+      document.getElementById("eventTime").value,
+      document.getElementById("eventLocation").value,
     ]
     notification(`⌛ Adding "${params[0]}"...`)
     try {
@@ -320,15 +273,12 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       try {
           viewEvents = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
-          console.log("viewEvents", viewEvents[1])
-          console.log("attendee...", attendees)
-          console.log(date9.toDateString())
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
 myModal.show();
 
 document.getElementById("modalHeader").innerHTML = `
 <div class="card mb-4">
-      <img class="card-img-top" src="${viewEvents[4]}" alt="...">
+      <img class="card-img-top" src="${viewEvents[2]}" alt="...">
       <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
       </div> 
   <div class="card-body text-left p-4 position-relative">
@@ -337,18 +287,18 @@ document.getElementById("modalHeader").innerHTML = `
         </div>
         <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
         <p class="card-text mb-1" style="min-height: 82px;">
-          ${viewEvents[2]}             
+          ${viewEvents[3]}             
         </p>
 
 
         <p class="card-text mt-1">
           <i class="bi bi-calendar-event-fill"></i>
-           <span>${date9.toDateString()}</span>
+           <span>${new Date(viewEvents[4]).toDateString()}</span>
         </p>
 
         <p class="card-text mt-4">
           <i class="bi bi-geo-alt-fill"></i>
-          <span>${viewEvents[4]}</span>
+          <span>${viewEvents[6]}</span>
 
 
         </p>
@@ -358,39 +308,7 @@ document.getElementById("modalHeader").innerHTML = `
 
     </div>
 `
-// second modal
-          document.getElementById("marketplace1").innerHTML = `
-          <div class="card mb-4">
-      <img class="card-img-top" src="${viewEvents[4]}" alt="...">
-      <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
-      </div> 
-  <div class="card-body text-left p-4 position-relative">
-        <div class="translate-middle-y position-absolute top-0">
-        ${identiconTemplate(viewEvents[0])}
-        </div>
-        <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
-        <p class="card-text mb-1" style="min-height: 82px;">
-          ${viewEvents[2]}             
-        </p>
 
-
-        <p class="card-text mt-1">
-          <i class="bi bi-calendar-event-fill"></i>
-           <span>${date9.toDateString()}</span>
-        </p>
-
-        <p class="card-text mt-4">
-          <i class="bi bi-geo-alt-fill"></i>
-          <span>${viewEvents[4]}</span>
-
-
-        </p>
-      </div>
-
-      <div id="att"></div>
-
-    </div>
-          `
           attendees.forEach((item) => {
             document.getElementById(`att`).innerHTML += `${identiconTemplate(item)}`;
           })
@@ -416,17 +334,4 @@ document.getElementById("modalHeader").innerHTML = `
     getProducts()
   }
 
-
-    // if the review section is visible
-    // else {
-    //   document.getElementById(`comment-review${index}`).style.display = "none";
-    //   notificationOff();
-    // }
-  
-
 })  
-
-
-
-// <div> <a class="btn btn-sm btn-dark Reviews" 
-//      id="${_product.index}">Reviews</a></div>

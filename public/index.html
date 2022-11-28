@@ -46,7 +46,7 @@
 
   <body>
   <nav class="navbar bg-dark navbar-dark">
-        <div class="container-fluid">
+        <div class="container">
           <span class="navbar-brand m-0 h4 fw-bold">ceAffairs</span>
           <span class="nav-link border rounded-pill bg-light">
             <span id="balance">0</span>
@@ -80,19 +80,14 @@
         </a>
       </div>
 
-<div class="row">
-      <main  class="col-md-8">
-        <div id="marketplace" class="row">
-        </div>
-      </main>
-    <main  class="col-md-2">
-    </main>
 
-      <main id="marketplace1" class="col-md-2">
-        <p>hekk</p>
-      </main>
+      
+        <main id="marketplace" class="row">
+        </main>
+     
+    
       </div>
-    </div>
+    
 
 <!-- Modal1 -->
 <div
@@ -118,13 +113,13 @@
       class="modal fade"
       id="addModal"
       tabindex="-1"
-      aria-labelledby="newProductModalLabel"
+      aria-labelledby="newProductModalLabel1"
       aria-hidden="true"
     >
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="newProductModalLabel">New Product</h5>
+            <h5 class="modal-title" id="newProductModalLabel1">New Product</h5>
             <button
               type="button"
               class="btn-close"
@@ -147,7 +142,7 @@
                 <div class="col">
                   <input
                     type="text"
-                    id="eventCardImg"
+                    id="eventCardImgUrl"
                     class="form-control mb-2"
                     placeholder="Enter event card image url"
                   />
@@ -168,6 +163,16 @@
                     id="eventDate"
                     class="form-control mb-2"
                     placeholder="Enter event date"
+                  />
+                </div>
+
+
+                <div class="col">
+                  <input
+                    type="time"
+                    id="eventTime"
+                    class="form-control mb-2"
+                    placeholder="Enter event time"
                   />
                 </div>
 
@@ -197,7 +202,7 @@
               data-bs-dismiss="modal"
               id="newProductBtn"
             >
-              Add product
+              Add Event
             </button>
           </div>
         </div>
