@@ -163,7 +163,7 @@ function productTemplate1(_product) {
         ${identiconTemplate(_product.owner)}
         </div>
         <h5 class="card-title fs-4 fw-bold mt-2">${_product.eventName}</h5>
-        <p class="card-text mb-1" style="min-height: 82px">
+        <p class=" mb-1 " style="min-height: 82px" >
           ${_product.eventDetails}             
         </p>
         <p class="card-text mt-1">
@@ -312,11 +312,53 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       const _id = e.target.id;
       let viewEvents;
       let attendees;
+      var date9 = new Date("3/2/2015");
+
+      
+
+
       try {
           viewEvents = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
           console.log("viewEvents", viewEvents[1])
           console.log("attendee...", attendees)
+          console.log(date9.toDateString())
+          let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
+myModal.show();
+
+document.getElementById("modalHeader").innerHTML = `
+<div class="card mb-4">
+      <img class="card-img-top" src="${viewEvents[4]}" alt="...">
+      <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
+      </div> 
+  <div class="card-body text-left p-4 position-relative">
+        <div class="translate-middle-y position-absolute top-0">
+        ${identiconTemplate(viewEvents[0])}
+        </div>
+        <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
+        <p class="card-text mb-1" style="min-height: 82px;">
+          ${viewEvents[2]}             
+        </p>
+
+
+        <p class="card-text mt-1">
+          <i class="bi bi-calendar-event-fill"></i>
+           <span>${date9.toDateString()}</span>
+        </p>
+
+        <p class="card-text mt-4">
+          <i class="bi bi-geo-alt-fill"></i>
+          <span>${viewEvents[4]}</span>
+
+
+        </p>
+      </div>
+
+      <div id="att"></div>
+
+    </div>
+`
+// second modal
           document.getElementById("marketplace1").innerHTML = `
           <div class="card mb-4">
       <img class="card-img-top" src="${viewEvents[4]}" alt="...">
@@ -326,24 +368,22 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
         <div class="translate-middle-y position-absolute top-0">
         ${identiconTemplate(viewEvents[0])}
         </div>
-        <h4 class="card-title fs-4 fw-bold mt-2">${viewEvents[1]}</h4>
-        <p class="card-text mb-1" style="min-height: 82px;
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis">
+        <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
+        <p class="card-text mb-1" style="min-height: 82px;">
           ${viewEvents[2]}             
         </p>
 
 
         <p class="card-text mt-1">
           <i class="bi bi-calendar-event-fill"></i>
-           <span>${viewEvents[3]}</span>
+           <span>${date9.toDateString()}</span>
         </p>
 
         <p class="card-text mt-4">
           <i class="bi bi-geo-alt-fill"></i>
           <span>${viewEvents[4]}</span>
+
+
         </p>
       </div>
 
