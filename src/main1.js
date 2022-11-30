@@ -196,3 +196,54 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
     }
   }
 })  
+
+
+
+
+
+
+// 
+else if(e.target.className.includes("Reviews")) {
+    const index = e.target.id;
+    const vis = document.getElementById(`comment-review${index}`).style.display;
+
+    // checks if the review section is visible or not
+    if(vis === "none") {
+        // loading notification
+       // notification("⌛ Loading Reviews...");
+       let Comments;
+       let Comments1;
+       // calls the getReview method on the contract with the index of the product as parameter
+       try {
+          Comments = await contract.methods.getReview(index).call();
+          Comments1 = await contract.methods.getEventComment(index).call();
+          console.log(Comments);
+           // console.log("Comments1", Comments1.comment);
+
+          // if there are no reviews
+          if(Comments.length === 0) {
+            document.getElementById(`review${index}`).innerHTML = "No reviews yet";
+          }
+          else{
+            document.getElementById(`review${index}`).innerHTML = "";
+          }
+
+          Comments1.forEach((comment) => {
+
+              // document.getElementById(`review${index}`).innerHTML += `<li class=" p-2 comment mt-1"> ${comment} </li>`;
+            console.log(comment[2])
+          });
+
+          // loops through the comments and appends them to the review section
+          Comments.forEach((comment) => {
+              document.getElementById(`review${index}`).innerHTML += `<li class=" p-2 comment mt-1"> ${comment} </li>`;
+          });
+        //  notificationOff();
+          document.getElementById(`comment-review${index}`).style.display = "block";
+       }
+        catch(error) {
+          console.log(error);
+          notification(`⚠️ ${error}.`, "error");
+        }
+    }
+  }

@@ -123,7 +123,7 @@ function eventTemplate(event) {
            id="${event.index}">Join</a></div>
            
 
-           <div> <a class="btn btn-sm btn-dark views"
+           <div> <a class="btn btn-sm btn-dark view"
            id="${event.index}">View</a></div>
           </div>
 
@@ -173,7 +173,7 @@ window.addEventListener("load", async () => {
 });
 
 document
-  .querySelector("#newProductBtn")
+  .querySelector("#postEventBtn")
   .addEventListener("click", async (e) => {
     const params = [
       document.getElementById("eventName").value,
@@ -183,7 +183,7 @@ document
       document.getElementById("eventTime").value,
       document.getElementById("eventLocation").value,
     ]
-    notification(`⌛ Adding "${params[0]}"...`)
+    notification(`⌛ Posting your event to the blockchain please wait...`)
     try {
       const result = await contract.methods
         .createEvent(...params)
@@ -191,7 +191,7 @@ document
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-    notification(`🎉 You successfully added "${params[0]}".`)
+    notification(`🎉 Congrats event successfully added`)
     getEventLists()
   })
 
@@ -201,13 +201,13 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
   if (e.target.className.includes("deleteBtn")) {
     const index = e.target.id
 
-    notification("⌛ Waiting for payment approval...")
+    notification("⌛ Your action is being processed, please approve")
     
     try {
       const result = await contract.methods
         .deleteEventById(index)
         .send({ from: kit.defaultAccount })
-      notification(`🎉 You successfully bought.`)
+      notification(`You have deleted an event successfully`)
       getEventLists()
       getBalance()
     } catch (error) {
@@ -216,95 +216,46 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
   }
 
 
-   else if(e.target.className.includes("Reviews")) {
-    const index = e.target.id;
-    const vis = document.getElementById(`comment-review${index}`).style.display;
-
-    // checks if the review section is visible or not
-    if(vis === "none") {
-        // loading notification
-       // notification("⌛ Loading Reviews...");
-       let Comments;
-       let Comments1;
-       // calls the getReview method on the contract with the index of the product as parameter
-       try {
-          Comments = await contract.methods.getReview(index).call();
-          Comments1 = await contract.methods.getEventComment(index).call();
-          console.log(Comments);
-           // console.log("Comments1", Comments1.comment);
-
-          // if there are no reviews
-          if(Comments.length === 0) {
-            document.getElementById(`review${index}`).innerHTML = "No reviews yet";
-          }
-          else{
-            document.getElementById(`review${index}`).innerHTML = "";
-          }
-
-          Comments1.forEach((comment) => {
-
-              // document.getElementById(`review${index}`).innerHTML += `<li class=" p-2 comment mt-1"> ${comment} </li>`;
-            console.log(comment[2])
-          });
-
-          // loops through the comments and appends them to the review section
-          Comments.forEach((comment) => {
-              document.getElementById(`review${index}`).innerHTML += `<li class=" p-2 comment mt-1"> ${comment} </li>`;
-          });
-        //  notificationOff();
-          document.getElementById(`comment-review${index}`).style.display = "block";
-       }
-        catch(error) {
-          console.log(error);
-          notification(`⚠️ ${error}.`, "error");
-        }
-    }
-  }
-    else if(e.target.className.includes("views")){
+    else if(e.target.className.includes("view")){
       const _id = e.target.id;
-      let viewEvents;
+      let eventData;
       let attendees;
-      var date9 = new Date("3/2/2015");
-
-      
-
-
       try {
-          viewEvents = await contract.methods.getEventById(_id).call();
+          eventData = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
 myModal.show();
 
 document.getElementById("modalHeader").innerHTML = `
 <div class="card mb-4">
-      <img style="width : 100%; height : 20vw;" src="${viewEvents[2]}" alt="...">
+      <img style="width : 100%; height : 20vw;" src="${eventData[2]}" alt="...">
       <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
       </div> 
   <div class="card-body text-left p-4 position-relative">
         <div class="translate-middle-y position-absolute top-0">
-        ${identiconTemplate(viewEvents[0])}
+        ${identiconTemplate(eventData[0])}
         </div>
-        <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
+        <h5 class="card-title  fw-bold mt-2">${eventData[1]}</h5>
         <p class="card-text mb-3">
-          ${viewEvents[3]}             
+          ${eventData[3]}             
         </p>
 
 
         <div class="d-flex p-2" style="border : 1px solid grey; border-radius : 2px;" > 
         <p class="card-text mt-1 ">
           <i class="bi bi-calendar-event-fill"></i>
-           <span>${new Date(viewEvents[4]).toDateString()}</span>
+           <span>${new Date(eventData[4]).toDateString()}</span>
         </p>
 
         <p class="card-text mt-1 mx-3">
           <i class="bi bi-clock-fill"></i>
-           <span>${viewEvents[5]}</span>
+           <span>${eventData[5]}</span>
         </p>
         </div>
 
         <p class="card-text mt-2 p-2" style="border : 1px solid grey; border-radius : 2px;">
           <i class="bi bi-geo-alt-fill"></i>
-          <span>${viewEvents[6]}</span>
+          <span>${eventData[6]}</span>
         </p>
 
         <hr />
