@@ -10,8 +10,8 @@ const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
 let contract
-let products = []
-let attedance = [1,3,5,6,7]
+let eventLists = []
+
 const connectCeloWallet = async function () {
   if (window.celo) {
     notification("⚠️ Please approve this DApp to use it.")
@@ -49,11 +49,11 @@ const getBalance = async function () {
   document.querySelector("#balance").textContent = cUSDBalance
 }
 
-const getProducts = async function() {
-  const _productsLength = await contract.methods.getEventLength().call()
-  const _products = []
-  for (let i = 0; i < _productsLength; i++) {
-    let _product = new Promise(async (resolve, reject) => {
+const getEventLists = async function() {
+  const eventLength = await contract.methods.getEventLength().call()
+  const _eventLists = []
+  for (let i = 0; i < eventLength; i++) {
+    let event = new Promise(async (resolve, reject) => {
       let p = await contract.methods.getEventById(i).call()
       resolve({
         index: i,
@@ -70,21 +70,21 @@ const getProducts = async function() {
     })
 
 
-    _products.push(_product)
+    _eventLists.push(event)
   }
-  products = await Promise.all(_products)
+  eventLists = await Promise.all(_eventLists)
 
-  renderProducts()
+  renderEvents()
 }
 
-function renderProducts() {
+function renderEvents() {
   document.getElementById("marketplace").innerHTML = ""
-  if (products) {
-  products.forEach((_product) => {
-    if (_product.owner != "0x0000000000000000000000000000000000000000") {
+  if (eventLists) {
+  eventLists.forEach((event) => {
+    if (event.owner != "0x0000000000000000000000000000000000000000") {
     const newDiv = document.createElement("div")
     newDiv.className = "col-md-3"
-    newDiv.innerHTML = productTemplate(_product)
+    newDiv.innerHTML = eventTemplate(event)
     document.getElementById("marketplace").appendChild(newDiv)
   }
   
@@ -95,36 +95,36 @@ else {
 }
 }
 
-function productTemplate(_product) {
+function eventTemplate(event) {
   let base =  `
  <div class="card mb-4 shadow">
-      <img class="card-img-top" src="${_product.eventCardImgUrl}" alt="...">
+      <img class="card-img-top" src="${event.eventCardImgUrl}" alt="...">
       <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded">
-      <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${_product.index}"></i>
+      <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${event.index}"></i>
       </div> 
   <div class="card-body text-left p-3 position-relative"
    style="background-color : rgb(255,218,185)">
-        <div class="translate-middle-y position-absolute top-0"  id="${_product.index}">
-        ${identiconTemplate(_product.owner)}
+        <div class="translate-middle-y position-absolute top-0"  id="${event.index}">
+        ${identiconTemplate(event.owner)}
         </div>
-        <h5 class="card-title  fw-bold mt-2">${_product.eventName}</h5>
+        <h5 class="card-title  fw-bold mt-2">${event.eventName}</h5>
         <p class="card-text mb-2" style="
   width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis">
-          ${_product.eventDetails}             
+          ${event.eventDetails}             
         </p>
 <div style="display: flex;
   justify-content: space-between;">
       
 
-           <div> <a class="btn btn-sm btn-dark attendee"
-           id="${_product.index}">Attend</a></div>
+           <div> <a class="btn btn-sm btn-success attendee"
+           id="${event.index}">Join</a></div>
            
 
            <div> <a class="btn btn-sm btn-dark views"
-           id="${_product.index}">View</a></div>
+           id="${event.index}">View</a></div>
           </div>
 
     
@@ -168,9 +168,8 @@ window.addEventListener("load", async () => {
   notification("⌛ Loading...")
   await connectCeloWallet()
   await getBalance()
-  await getProducts()
+  await getEventLists()
   notificationOff()
-   console.log("rro", products[0].owner)
 });
 
 document
@@ -193,7 +192,7 @@ document
       notification(`⚠️ ${error}.`)
     }
     notification(`🎉 You successfully added "${params[0]}".`)
-    getProducts()
+    getEventLists()
   })
 
 
@@ -209,7 +208,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
         .deleteEventById(index)
         .send({ from: kit.defaultAccount })
       notification(`🎉 You successfully bought.`)
-      getProducts()
+      getEventLists()
       getBalance()
     } catch (error) {
       notification(`⚠️ ${error}.`)
@@ -278,7 +277,7 @@ myModal.show();
 
 document.getElementById("modalHeader").innerHTML = `
 <div class="card mb-4">
-      <img class="card-img-top" src="${viewEvents[2]}" alt="...">
+      <img style="width : 100%; height : 20vw;" src="${viewEvents[2]}" alt="...">
       <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
       </div> 
   <div class="card-body text-left p-4 position-relative">
@@ -286,26 +285,35 @@ document.getElementById("modalHeader").innerHTML = `
         ${identiconTemplate(viewEvents[0])}
         </div>
         <h5 class="card-title  fw-bold mt-2">${viewEvents[1]}</h5>
-        <p class="card-text mb-1" style="min-height: 82px;">
+        <p class="card-text mb-3">
           ${viewEvents[3]}             
         </p>
 
 
-        <p class="card-text mt-1">
+        <div class="d-flex p-2" style="border : 1px solid grey; border-radius : 2px;" > 
+        <p class="card-text mt-1 ">
           <i class="bi bi-calendar-event-fill"></i>
            <span>${new Date(viewEvents[4]).toDateString()}</span>
         </p>
 
-        <p class="card-text mt-4">
+        <p class="card-text mt-1 mx-3">
+          <i class="bi bi-clock-fill"></i>
+           <span>${viewEvents[5]}</span>
+        </p>
+        </div>
+
+        <p class="card-text mt-2 p-2" style="border : 1px solid grey; border-radius : 2px;">
           <i class="bi bi-geo-alt-fill"></i>
           <span>${viewEvents[6]}</span>
-
-
         </p>
-      </div>
 
+        <hr />
+      <p class="card-text">Attendees:</p>
       <div id="att"></div>
 
+      </div>
+
+      
     </div>
 `
 
@@ -331,7 +339,7 @@ document.getElementById("modalHeader").innerHTML = `
       notification(`⚠️ ${error}.`)
     }
     notification(`🎉 You successfully added .`)
-    getProducts()
+    getEventLists()
   }
 
 })  
