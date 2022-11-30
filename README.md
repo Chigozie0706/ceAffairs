@@ -1,10 +1,12 @@
-# Celo Marketplace Dapp
+# CeAffairs Dapp
 
 ## Description
 This is a very simple marketplace dapp where users can:
-* See products hosted on the Celo Blockchain
-* Purchase products with cUSD and pay the owner
-* Add your own products to the dapp
+1. Create an event.
+2. View list of events created by you and others.
+3. Join an event.
+4. View a event with all neccessary informations.
+4. Delete an event only if you are the owner of that event.
 
 ## Live Demo
 [CeAffairs Dapp](https://chigozie0706.github.io/ceAffairs/)
@@ -17,12 +19,6 @@ This is a very simple marketplace dapp where users can:
 3. Go to [https://celo.org/developers/faucet](https://celo.org/developers/faucet) and get tokens for the alfajores testnet.
 4. Switch to the alfajores testnet in the CeloExtensionWallet.
 
-### Test
-1. Create an event.
-2. View list of events created by you and others.
-3. Join an event.
-4. View a event with all neccessary informations.
-4. Delete an event only if you are the owner of that event.
 
 
 ## Project Setup
