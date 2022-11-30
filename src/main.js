@@ -5,7 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x586eDe6C40207b42c99e79ECdDdd7b1ac6308891"
+const MPContractAddress = "0x104F2Eed175E091Cf4Ab62896917f393B990307a"
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 
 let kit
@@ -99,7 +99,7 @@ function eventTemplate(event) {
   let base =  `
  <div class="card mb-4 shadow">
       <img class="card-img-top" src="${event.eventCardImgUrl}" alt="...">
-      <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded">
+      <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded" style="cursor : pointer;">
       <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${event.index}"></i>
       </div> 
   <div class="card-body text-left p-3 position-relative"
@@ -201,7 +201,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
   if (e.target.className.includes("deleteBtn")) {
     const index = e.target.id
 
-    notification("⌛ Your action is being processed, please approve")
+    notification("⌛ Please wait, your action is being processed...")
     
     try {
       const result = await contract.methods
@@ -211,7 +211,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       getEventLists()
       getBalance()
     } catch (error) {
-      notification(`⚠️ ${error}.`)
+      notification(`⚠️ you are not the owner of this event`)
     }
   }
 
@@ -281,7 +281,7 @@ document.getElementById("modalHeader").innerHTML = `
   else if(e.target.className.includes("attendee")){
     const _id = e.target.id;
 
-    notification(`⌛ Adding ...`)
+    notification(`⌛ Processing your request please wait ...`)
     try {
       const result = await contract.methods
         .addEventAttendees(_id)
@@ -289,7 +289,7 @@ document.getElementById("modalHeader").innerHTML = `
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-    notification(`🎉 You successfully added .`)
+    notification(`🎉 You are now one of the attendee .`)
     getEventLists()
   }
 
