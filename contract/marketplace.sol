@@ -25,7 +25,10 @@ contract CeAffairs {
 
     mapping(uint => mapping(address => bool)) public attending;
 
-    // Function to create  an event.
+    /**
+        * @notice Function to create  an event.
+        * @dev Function will revert if input data contains non-empty or invalid values
+    */
     function createEvent(
         string calldata _eventName,
         string calldata _eventCardImgUrl,
@@ -52,7 +55,7 @@ contract CeAffairs {
         eventLength++;
     }
 
-    // Function to get a event through its id.
+    /// @notice Function to get a event through its id.
     function getEventById(uint256 _index)
         public
         view
@@ -77,13 +80,17 @@ contract CeAffairs {
         );
     }
 
-    //Function only a event owner can delete an event.
+    /// @notice Function where only a event owner can delete an event.
     function deleteEventById(uint256 _index) public {
         require(msg.sender == events[_index].owner, "you are not the owner");
         delete events[_index];
     }
 
-    //Function to attend an event.
+    /**
+        * @notice Function to attend an event.
+        * @notice Users can attend event only once
+        * @notice Users can only join events that hasn't yet started
+     */
     function addEventAttendees(uint256 _index) public {
         require(!attending[_index][msg.sender], "you have already added event");
         require(events[_index].eventDate > block.timestamp);
@@ -91,7 +98,7 @@ contract CeAffairs {
         eventAttendees[_index].push(msg.sender);
     }
 
-    //function to get list of event attendees by event id.
+    /// @notice function to get list of event attendees by event id.
     function getAttendees(uint256 _index)
         public
         view
@@ -100,7 +107,7 @@ contract CeAffairs {
         return eventAttendees[_index];
     }
 
-    //function to get length of event.
+    /// @notice function to get length of event.
     function getEventLength() public view returns (uint256) {
         return (eventLength);
     }
