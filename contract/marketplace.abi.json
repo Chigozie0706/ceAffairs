@@ -93,39 +93,46 @@
 		"name": "getEventById",
 		"outputs": [
 			{
-				"internalType": "address",
+				"components": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "eventName",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventCardImgUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventDetails",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventTime",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventLocation",
+						"type": "string"
+					}
+				],
+				"internalType": "struct CeAffairs.Event",
 				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
+				"type": "tuple"
 			}
 		],
 		"stateMutability": "view",

@@ -5,7 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0xf8C64728358c0c8E793f607aD13e3A28328F6894" //Event Contract Address
+const MPContractAddress = "0x16Fd73F91Fe45dA4145d0E8a6dEdC53869B442bA" //"0xf8C64728358c0c8E793f607aD13e3A28328F6894" //Event Contract Address
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
@@ -121,18 +121,13 @@ function eventTemplate(event) {
       <img class="card-img-top" src="${event.eventCardImgUrl}" alt="...">
       <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded" style="cursor : pointer;">
       <i class="bi bi-trash-fill deleteBtn" style="color : white;" id="${event.index}"></i>
-      </div> 
-  <div class="card-body text-left p-3 position-relative"
-   style="background-color : rgb(255,218,185)">
+      </div>
+  <div class="card-body text-left p-3 position-relative" style="border: thin solid red; background-color:rgb(255,218,185)">
         <div class="translate-middle-y position-absolute top-0"  id="${event.index}">
         ${identiconTemplate(event.owner)}
         </div>
-        <h6 class="card-title  fw-bold mt-2">${event.eventName}</h6>
-        <p class="card-text mb-2" style="
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis">
+        <h6 class="card-title fw-bold mt-2">${event.eventName}</h6>
+        <p class="card-text mb-2">
           ${event.eventDetails}             
         </p>
 <div style="display: flex;
@@ -234,16 +229,22 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
     notification("⌛ Please wait, your action is being processed...")
     
     // calls the delete fucntion on the smart contract
-    try {
-      const result = await contract.methods
-        .deleteEventById(index)
-        .send({ from: kit.defaultAccount })
-      notification(`You have deleted an event successfully`)
-      getEventLists()
-      getBalance()
-    } catch (error) {
+    if(eventLists[index].owner === kit.defaultAccount) {
+      try {
+        const result = await contract.methods
+          .deleteEventById(index)
+          .send({ from: kit.defaultAccount })
+        notification(`You have deleted an event successfully`)
+        getEventLists()
+        getBalance()
+      } catch (error) {
+        notification(`⚠️ something went wrong, please try again later.`)
+      }
+    }
+    else {
       notification(`⚠️ you are not the owner of this event`)
     }
+    
   }
     else if(e.target.className.includes("view")){
       const _id = e.target.id;
