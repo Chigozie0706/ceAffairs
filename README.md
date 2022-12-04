@@ -1,7 +1,7 @@
 # CeAffairs Dapp
 
 ## Description
-This is a very simple marketplace dapp where users can:
+This is a very simple dapp where users can:
 1. Create an event.
 2. View list of events created by you and others.
 3. Join an event.

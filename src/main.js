@@ -5,14 +5,17 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x104F2Eed175E091Cf4Ab62896917f393B990307a"
-const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
+const MPContractAddress = "0x104F2Eed175E091Cf4Ab62896917f393B990307a" //Event Contract Address
+const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
-let kit
-let contract
-let eventLists = []
+let kit //contractkit
+let contract // contract variable
+let eventLists = [] // array of event lists
 
+
+//Connects the wallet gets the account and initializes the contract
 const connectCeloWallet = async function () {
+  //checks if wallet is avaliable and gets the account.
   if (window.celo) {
     notification("⚠️ Please approve this DApp to use it.")
     try {
@@ -29,7 +32,9 @@ const connectCeloWallet = async function () {
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-  } else {
+  }
+  // if wallet is not avaliable excute enable the notification 
+  else {
     notification("⚠️ Please install the CeloExtensionWallet.")
   }
 }
@@ -43,17 +48,29 @@ async function approve(_price) {
   return result
 }
 
+
+// gets the balance of the connected account
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
+  // gets the balance in cUSD
   const cUSDBalance = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
   document.querySelector("#balance").textContent = cUSDBalance
 }
 
+
+// gets the lists of all events created
 const getEventLists = async function() {
+  // calls the getEventLength function on SmartContract to get the total number of event created.
   const eventLength = await contract.methods.getEventLength().call()
+  
+  //initializing an event array for call function
   const _eventLists = []
+
+  //  loops through all the products
   for (let i = 0; i < eventLength; i++) {
     let event = new Promise(async (resolve, reject) => {
+
+  // calls the getEventById function on the SmartContract
       let p = await contract.methods.getEventById(i).call()
       resolve({
         index: i,
@@ -65,18 +82,19 @@ const getEventLists = async function() {
         eventTime: p[5],
         eventLocation : p[6]
       })
-
-      console.log(p)
     })
 
-
+    // push the items on the _eventList array
     _eventLists.push(event)
   }
-  eventLists = await Promise.all(_eventLists)
 
+  // resolves all promise
+  eventLists = await Promise.all(_eventLists)
   renderEvents()
 }
 
+
+// function to render a html template after the list of event is being fetched.
 function renderEvents() {
   document.getElementById("marketplace").innerHTML = ""
   if (eventLists) {
@@ -95,8 +113,10 @@ else {
 }
 }
 
+
+// function that create a html template
 function eventTemplate(event) {
-  let base =  `
+  return `
  <div class="card mb-4 shadow">
       <img class="card-img-top" src="${event.eventCardImgUrl}" alt="...">
       <div class="position-absolute  top-0 end-0 bg-danger mt-4 px-2 py-1 rounded" style="cursor : pointer;">
@@ -119,11 +139,11 @@ function eventTemplate(event) {
   justify-content: space-between;">
       
 
-           <div> <a class="btn btn-sm btn-success attendee"
+           <div> <a class="btn btn-sm btn-success rounded-pill attendee"
            id="${event.index}">Join</a></div>
            
 
-           <div> <a class="btn btn-sm btn-dark view"
+           <div> <a class="btn btn-sm btn-dark rounded-pill view"
            id="${event.index}">View</a></div>
           </div>
 
@@ -131,11 +151,11 @@ function eventTemplate(event) {
       </div>
     </div>
     `
-  return base
 }
 
 
 
+// function  that creates an icon using the contract address of the owner
 function identiconTemplate(_address) {
   const icon = blockies
     .create({
@@ -155,11 +175,15 @@ function identiconTemplate(_address) {
   `
 }
 
+
+// function to create a notification bar 
 function notification(_text) {
   document.querySelector(".alert").style.display = "block"
   document.querySelector("#notification").textContent = _text
 }
 
+
+// function to turn off notification bar based on some conditions
 function notificationOff() {
   document.querySelector(".alert").style.display = "none"
 }
@@ -171,6 +195,8 @@ window.addEventListener("load", async () => {
   await getEventLists()
   notificationOff()
 });
+
+
 
 document
   .querySelector("#postEventBtn")
@@ -197,12 +223,15 @@ document
 
 
 
+// implements various functionalities
 document.querySelector("#marketplace").addEventListener("click", async (e) => {
+  //checks if there is a class name called deleteBtn
   if (e.target.className.includes("deleteBtn")) {
     const index = e.target.id
 
     notification("⌛ Please wait, your action is being processed...")
     
+    // calls the delete fucntion on the smart contract
     try {
       const result = await contract.methods
         .deleteEventById(index)
@@ -214,8 +243,6 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       notification(`⚠️ you are not the owner of this event`)
     }
   }
-
-
     else if(e.target.className.includes("view")){
       const _id = e.target.id;
       let eventData;
@@ -224,8 +251,8 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
           eventData = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
-myModal.show();
-
+          myModal.show();
+// 
 document.getElementById("modalHeader").innerHTML = `
 <div class="card mb-4">
       <img style="width : 100%; height : 20vw;" src="${eventData[2]}" alt="...">
@@ -257,18 +284,13 @@ document.getElementById("modalHeader").innerHTML = `
           <i class="bi bi-geo-alt-fill"></i>
           <span>${eventData[6]}</span>
         </p>
-
         <hr />
       <p class="card-text">Attendees:</p>
       <div id="att"></div>
-
       </div>
-
-      
     </div>
 `
-
-          attendees.forEach((item) => {
+      attendees.forEach((item) => {
             document.getElementById(`att`).innerHTML += `${identiconTemplate(item)}`;
           })
           
@@ -282,6 +304,7 @@ document.getElementById("modalHeader").innerHTML = `
     const _id = e.target.id;
 
     notification(`⌛ Processing your request please wait ...`)
+    
     try {
       const result = await contract.methods
         .addEventAttendees(_id)
