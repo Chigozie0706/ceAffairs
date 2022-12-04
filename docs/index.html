@@ -45,6 +45,8 @@
   </head>
 
   <body>
+
+   <!-- Navbar starts here -->
   <nav class="navbar bg-dark navbar-dark">
         <div class="container">
           <span class="navbar-brand m-0 h4 fw-bold">ceAffairs</span>
@@ -54,33 +56,40 @@
           </span>
         </div>
       </nav>
+ <!-- Navbar ends here -->
 
-    <div class="container mt-2">
+
+
+ <!-- Hero starts here -->
+    <div style="text-align: center; background-color: light-grey;" class="shadow p-5"> 
+      <p>Welcome to ceAffairs a blockchain event hosting site where you host an event and also join be a guest to other people event on the celo blockchain</p>
+
+      <button class="btn btn-success rounded-pill" data-bs-toggle="modal"
+          data-bs-target="#addModal">Post an Event</button>
+    </div>
+ <!--Hero ends here -->
+
+
+ <!-- Start of container holding list of events -->
+    <div class="container mt-3">
       <div class="alert alert-warning sticky-top mt-2" role="alert">
         <span id="notification">⌛ Loading...</span>
       </div>
   
-      <div class="mb-4" style="margin-top: 4em">
-        <a
-          class="btn btn-dark rounded-pill"
-          data-bs-toggle="modal"
-          data-bs-target="#addModal"
-        >
-          Post Event
-        </a>
-      </div>
-
       
-      <h5 class="mx-auto">Event Lists</h5>
+      
+      <h5 class="my-5 text-center" id="eventPage">Event Lists</h5>
       
         <main id="marketplace" class="row">
+          <p class="text-center mt-5">loading please wait...</p>
         </main>
      
     
       </div>
+<!-- End of container holding list of events -->
     
 
-<!-- Modal1 -->
+<!-- start of modal that view an event -->
 <div
       class="modal fade"
       id="addModal1"
@@ -106,7 +115,10 @@
           </div>
           </div>
 
-<!--Modal-->
+<!-- end of modal that view an event -->
+
+
+<!-- start of modal to add a new event -->
     <div
       class="modal fade"
       id="addModal"
@@ -206,7 +218,7 @@
         </div>
       </div>
     </div>
-<!--/Modal-->
+<!-- end of modal to add a new event -->
 
     <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"

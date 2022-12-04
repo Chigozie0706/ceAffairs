@@ -5,7 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0x104F2Eed175E091Cf4Ab62896917f393B990307a" //Event Contract Address
+const MPContractAddress = "0xf8C64728358c0c8E793f607aD13e3A28328F6894" //Event Contract Address
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
@@ -127,7 +127,7 @@ function eventTemplate(event) {
         <div class="translate-middle-y position-absolute top-0"  id="${event.index}">
         ${identiconTemplate(event.owner)}
         </div>
-        <h5 class="card-title  fw-bold mt-2">${event.eventName}</h5>
+        <h6 class="card-title  fw-bold mt-2">${event.eventName}</h6>
         <p class="card-text mb-2" style="
   width: 250px;
   white-space: nowrap;
@@ -188,6 +188,8 @@ function notificationOff() {
   document.querySelector(".alert").style.display = "none"
 }
 
+
+// initialization of functions when the window is loaded.
 window.addEventListener("load", async () => {
   notification("⌛ Loading...")
   await connectCeloWallet()
@@ -197,7 +199,7 @@ window.addEventListener("load", async () => {
 });
 
 
-
+// function to add an event on the blockchain.
 document
   .querySelector("#postEventBtn")
   .addEventListener("click", async (e) => {
@@ -246,18 +248,20 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
     else if(e.target.className.includes("view")){
       const _id = e.target.id;
       let eventData;
-      let attendees;
+      let attendees = [];
+
+      // function to get list of attendess on the smart contract.
       try {
           eventData = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
           let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
           myModal.show();
-// 
+
+// displays events details on the modal
 document.getElementById("modalHeader").innerHTML = `
 <div class="card mb-4">
       <img style="width : 100%; height : 20vw;" src="${eventData[2]}" alt="...">
-      <div class="position-absolute top-0 end-0 bg-warning mt-4 px-2 py-1 rounded-start">
-      </div> 
+      
   <div class="card-body text-left p-4 position-relative">
         <div class="translate-middle-y position-absolute top-0">
         ${identiconTemplate(eventData[0])}
@@ -289,10 +293,16 @@ document.getElementById("modalHeader").innerHTML = `
       <div id="att"></div>
       </div>
     </div>
-`
-      attendees.forEach((item) => {
+  `   
+
+  if (attendees.length) {
+    attendees.forEach((item) => {
             document.getElementById(`att`).innerHTML += `${identiconTemplate(item)}`;
           })
+  } else{
+    document.getElementById(`att`).innerHTML += `<p class="text-center">no attendee yet...</p>`;
+  };
+      
           
     }
     catch (error) {
