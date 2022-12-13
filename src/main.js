@@ -5,7 +5,7 @@ import marketplaceAbi from "../contract/marketplace.abi.json"
 import erc20Abi from "../contract/erc20.abi.json"
 
 const ERC20_DECIMALS = 18
-const MPContractAddress = "0xf8C64728358c0c8E793f607aD13e3A28328F6894" //Event Contract Address
+const MPContractAddress = "0xfE0C8243D8F04411752154B9421A2bc8a9b63962" //Event Contract Address
 const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
@@ -196,18 +196,28 @@ window.addEventListener("load", async () => {
   await getBalance()
   await getEventLists()
   notificationOff()
-});
+  });
 
 
 // function to add an event on the blockchain.
 document
   .querySelector("#postEventBtn")
   .addEventListener("click", async (e) => {
+    
+    // gets the event date value from the form
+    let eventDate = document.getElementById("eventDate").value;
+    
+    // stores the eventDate in the date variable.
+    const date = new Date(eventDate);
+
+    // converts date to timestamp in seconds.
+    const timestamp =  Math.floor(date.getTime() / 1000);
+
     const params = [
       document.getElementById("eventName").value,
       document.getElementById("eventCardImgUrl").value,
       document.getElementById("eventDetails").value,
-      document.getElementById("eventDate").value,
+      parseInt(timestamp),
       document.getElementById("eventTime").value,
       document.getElementById("eventLocation").value,
     ]
@@ -254,8 +264,19 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       try {
           eventData = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
-          let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {});
-          myModal.show();
+          let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {backdrop: 'static', keyboard: false});
+          myModal.show(); 
+          
+
+// stores the timestamp of the event date.
+var eventTimeStamp= parseInt(eventData[4])
+
+// converts timestamp to milliseconds.
+var convertToMilliseconds = eventTimeStamp * 1000;
+
+// create an object for it.
+var dateFormat= new Date(convertToMilliseconds);
+  
 
 // displays events details on the modal
 document.getElementById("modalHeader").innerHTML = `
@@ -275,7 +296,9 @@ document.getElementById("modalHeader").innerHTML = `
         <div class="d-flex p-2" style="border : 1px solid grey; border-radius : 2px;" > 
         <p class="card-text mt-1 ">
           <i class="bi bi-calendar-event-fill"></i>
-           <span>${new Date(eventData[4]).toDateString()}</span>
+           <span>${dateFormat.getDate()+
+           "/"+(dateFormat.getMonth()+1)+
+           "/"+dateFormat.getFullYear()}</span>
         </p>
 
         <p class="card-text mt-1 mx-3">
@@ -293,6 +316,8 @@ document.getElementById("modalHeader").innerHTML = `
       <div id="att"></div>
       </div>
     </div>
+
+
   `   
 
   if (attendees.length) {
@@ -327,3 +352,5 @@ document.getElementById("modalHeader").innerHTML = `
   }
 
 })  
+
+
