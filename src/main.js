@@ -32,6 +32,7 @@ const connectCeloWallet = async function () {
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
+    notificationOff()
   }
   // if wallet is not avaliable excute enable the notification 
   else {
@@ -230,6 +231,7 @@ document
       notification(`⚠️ ${error}.`)
     }
     notification(`🎉 Congrats event successfully added`)
+    notificationOff()
     getEventLists()
   })
 
@@ -254,6 +256,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
     } catch (error) {
       notification(`⚠️ you are not the owner of this event`)
     }
+    notificationOff()
   }
     else if(e.target.className.includes("view")){
       const _id = e.target.id;
@@ -333,6 +336,7 @@ document.getElementById("modalHeader").innerHTML = `
     catch (error) {
       notification(`⚠️ ${error}.`)
     }
+    notificationOff()
   }
 
   else if(e.target.className.includes("attendee")){
@@ -344,10 +348,12 @@ document.getElementById("modalHeader").innerHTML = `
       const result = await contract.methods
         .addEventAttendees(_id)
         .send({ from: kit.defaultAccount })
+        notification(`🎉 You are now one of the attendee .`)
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
-    notification(`🎉 You are now one of the attendee .`)
+    notificationOff()
+    
     getEventLists()
   }
 
