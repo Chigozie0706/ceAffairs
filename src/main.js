@@ -1,12 +1,9 @@
 import Web3 from "web3"
 import { newKitFromWeb3 } from "@celo/contractkit"
-import BigNumber from "bignumber.js"
-import marketplaceAbi from "../contract/marketplace.abi.json"
-import erc20Abi from "../contract/erc20.abi.json"
+import eventPlaceAbi from "../contract/event.abi.json"
 
 const ERC20_DECIMALS = 18
 const MPContractAddress = "0xfE0C8243D8F04411752154B9421A2bc8a9b63962" //Event Contract Address
-const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1" //Erc20 contract address
 
 let kit //contractkit
 let contract // contract variable
@@ -28,7 +25,7 @@ const connectCeloWallet = async function () {
       const accounts = await kit.web3.eth.getAccounts()
       kit.defaultAccount = accounts[0]
 
-      contract = new kit.web3.eth.Contract(marketplaceAbi, MPContractAddress)
+      contract = new kit.web3.eth.Contract(eventPlaceAbi, MPContractAddress)
     } catch (error) {
       notification(`⚠️ ${error}.`)
     }
@@ -39,16 +36,6 @@ const connectCeloWallet = async function () {
     notification("⚠️ Please install the CeloExtensionWallet.")
   }
 }
-
-async function approve(_price) {
-  const cUSDContract = new kit.web3.eth.Contract(erc20Abi, cUSDContractAddress)
-
-  const result = await cUSDContract.methods
-    .approve(MPContractAddress, _price)
-    .send({ from: kit.defaultAccount })
-  return result
-}
-
 
 // gets the balance of the connected account
 const getBalance = async function () {
@@ -97,14 +84,14 @@ const getEventLists = async function() {
 
 // function to render a html template after the list of event is being fetched.
 function renderEvents() {
-  document.getElementById("marketplace").innerHTML = ""
+  document.getElementById("eventplace").innerHTML = ""
   if (eventLists) {
   eventLists.forEach((event) => {
     if (event.owner != "0x0000000000000000000000000000000000000000") {
     const newDiv = document.createElement("div")
     newDiv.className = "col-md-3"
     newDiv.innerHTML = eventTemplate(event)
-    document.getElementById("marketplace").appendChild(newDiv)
+    document.getElementById("eventplace").appendChild(newDiv)
   }
   
   })
@@ -238,7 +225,7 @@ document
 
 
 // implements various functionalities
-document.querySelector("#marketplace").addEventListener("click", async (e) => {
+document.querySelector("#eventplace").addEventListener("click", async (e) => {
   //checks if there is a class name called deleteBtn
   if (e.target.className.includes("deleteBtn")) {
     const index = e.target.id
@@ -267,7 +254,7 @@ document.querySelector("#marketplace").addEventListener("click", async (e) => {
       try {
           eventData = await contract.methods.getEventById(_id).call();
           attendees = await contract.methods.getAttendees(_id).call();
-          let myModal = new bootstrap.Modal(document.getElementById('addModal1'), {backdrop: 'static', keyboard: false});
+          let myModal = new bootstrap.Modal(document.getElementById('showEventDetails'), {backdrop: 'static', keyboard: false});
           myModal.show(); 
           
 
@@ -282,7 +269,7 @@ var dateFormat= new Date(convertToMilliseconds);
   
 
 // displays events details on the modal
-document.getElementById("modalHeader").innerHTML = `
+document.getElementById("modalBody").innerHTML = `
 <div class="card mb-4">
       <img style="width : 100%; height : 20vw;" src="${eventData[2]}" alt="...">
       
